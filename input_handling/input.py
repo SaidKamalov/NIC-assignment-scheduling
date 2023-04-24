@@ -2,7 +2,7 @@ import json
 from datetime import date
 
 
-def get_assignments(path_to_json: str, random: bool = False):
+def _read_assignments(path_to_json: str, random: bool = False):
     if random:  # TODO call function that creates random assignments for testing
         pass
     else:
@@ -23,6 +23,4 @@ def get_assignments(path_to_json: str, random: bool = False):
 
 
 if __name__ == "__main__":
-    # TODO: remove later, just for test
-    for ass in get_assignments("./input-handling/assignments-example.json"):
-        print(ass)
+    pass
