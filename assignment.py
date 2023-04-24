@@ -1,5 +1,5 @@
 from datetime import date
-from input_handling.input import _read_assignments
+from input_handling.input import _read_assignments, _generate_assignments
 
 
 # TODO: to be tested
@@ -27,12 +27,27 @@ class Assignment:
         return res
 
 
-def get_assignments(path: str) -> list[Assignment]:
-    assignments = [Assignment(**assignment) for assignment in _read_assignments(path)]
+def get_assignments(
+    path: str | None = None, num_of_assignments: int = 10, **kwargs
+) -> list[Assignment]:
+    if path == None:
+        assignments = [
+            Assignment(**assignment)
+            for assignment in _generate_assignments(10, **kwargs)
+        ]
+    else:
+        assignments = [
+            Assignment(**assignment) for assignment in _read_assignments(path)
+        ]
     return assignments
 
 
 if __name__ == "__main__":
     # TODO: remove, just for testing
     for ass in get_assignments("./input_handling/assignments-example.json"):
+        print(ass)
+    print("generated:")
+    for ass in get_assignments(
+        num_of_assignments=5, max_day_range=10, include_weekends_prob=0.9
+    ):
         print(ass)
