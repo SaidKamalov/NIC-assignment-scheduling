@@ -20,8 +20,7 @@ class Assignment:
     def __str__(self):
         res = (
             f"{self.name}: need {self.hours_to_complete} hours to complete\n"
-            + f"can be from {self.start_date.year}-{self.start_date.month}-{self.start_date.day} "
-            + f"to {self.end_date.year}-{self.end_date.month}-{self.end_date.day}"
+            + f"can be from {self.start_date} to {self.end_date}."
         )
         return res
 
@@ -48,7 +47,7 @@ if __name__ == "__main__":
     # TODO: remove, just for testing
     for ass in get_assignments("./input_handling/assignments-example.json"):
         print(ass)
-    print("generated:")
+    print("generated and sorted:")
     generated_ass = []
     for ass in get_assignments(
         num_of_assignments=5, max_day_range=10, include_weekends_prob=0.9
