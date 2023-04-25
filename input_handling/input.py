@@ -28,14 +28,13 @@ def _generate_assignments(
     working_hours_ratio: float = 0.1,
     include_weekends_prob: float = 0.3,
 ):
+    year = 2023 + randint(-2, 0)
     for i in range(num_of_assignments):
         assignment = {}
         assignment["name"] = f"Assignment {i}"
         assignment["include_weekends"] = (
             False if random() > include_weekends_prob else True
         )
-
-        year = 2023 + randint(-2, 2)
         start = datetime.date(year, 1, 1)
         end = datetime.date(year, 12, 31)
         delta = end - start
