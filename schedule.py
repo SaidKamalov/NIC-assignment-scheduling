@@ -16,6 +16,7 @@ class Schedule:
         self.assignments: list[Assignment] = get_assignments(
             path=path, num_of_assignments=3
         )
+        # The earliest and the latest date for all assignments
         self.start: date
         self.end: date
         self.days: OrderedDict[date, float] = OrderedDict()
