@@ -20,6 +20,10 @@ class Gen:
         return res
 
     def rand_time_slot(self) -> tuple[date, date]:
+        """
+        Function to get the time slot for the assignment in the give gen.
+        Time slot is in [assignment.start_date; assignment.end_date].
+        """
         end_date = self.assignment.end_date
         start_date = self.assignment.start_date
         delta = end_date - start_date
@@ -32,12 +36,17 @@ class Gen:
 
 
 def generate_chromo(genes: list[Gen]) -> Chromosome:
+    """Function to create new chromosome"""
     genes_for_chromo = [generate_rand_gen(gen) for gen in genes]
     chromo = Chromosome(genes_for_chromo)
     return chromo
 
 
 def generate_rand_gen(gen: Gen) -> Gen:
+    """
+    Function to create copy of a given gen,
+    but assign random time slot for the assignment.
+    """
     new_gen = Gen(gen.assignment)
     new_gen.start, new_gen.deadline = gen.rand_time_slot()
     return new_gen
