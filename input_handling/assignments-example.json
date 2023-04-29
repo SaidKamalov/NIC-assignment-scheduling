@@ -1,0 +1,25 @@
+{
+    "assignments": [
+        {
+            "name": "Math assignment",
+            "start_date": "2023-02-10",
+            "end_date": "2023-02-20",
+            "hours_to_complete": 10,
+            "include_weekends": true
+        },
+        {
+            "name": "History assignment",
+            "start_date": "2023-05-01",
+            "end_date": "2023-05-07",
+            "hours_to_complete": 8,
+            "include_weekends": false
+        },
+        {
+            "name": "Science assignment",
+            "start_date": "2023-04-16",
+            "end_date": "2023-04-16",
+            "hours_to_complete": 12,
+            "include_weekends": false
+        }
+    ]
+}
