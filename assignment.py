@@ -4,12 +4,12 @@ from input_handling.input import _read_assignments, _generate_assignments
 
 class Assignment:
     def __init__(
-        self,
-        name: str,
-        start_date: date,
-        end_date: date,
-        hours_to_complete: int,
-        include_weekends: bool,
+            self,
+            name: str,
+            start_date: date,
+            end_date: date,
+            hours_to_complete: int,
+            include_weekends: bool,
     ):
         self.name = name
         self.hours_to_complete = hours_to_complete
@@ -19,8 +19,8 @@ class Assignment:
 
     def __str__(self):
         res = (
-            f"{self.name}: need {self.hours_to_complete} hours to complete\n"
-            + f"can be from {self.start_date} to {self.end_date}."
+                f"{self.name}: need {self.hours_to_complete} hours to complete\n"
+                + f"can be from {self.start_date} to {self.end_date}."
         )
         return res
 
@@ -32,7 +32,7 @@ class Assignment:
 
 
 def get_assignments(path: str | None = None, **kwargs) -> list[Assignment]:
-    if path == None:
+    if path is None:
         assignments = [
             Assignment(**assignment) for assignment in _generate_assignments(**kwargs)
         ]
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     print("generated and sorted:")
     generated_ass = []
     for ass in get_assignments(
-        num_of_assignments=5, max_day_range=10, include_weekends_prob=0.9
+            num_of_assignments=5, max_day_range=10, include_weekends_prob=0.9
     ):
         generated_ass.append(ass)
     for ass in sorted(generated_ass):

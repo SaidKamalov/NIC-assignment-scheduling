@@ -22,19 +22,18 @@ def _read_assignments(path_to_json: str):
 
 
 def _generate_assignments(
-    num_of_assignments: int,
-    max_day_range: int = 30,
-    min_day_range: int = 2,
-    working_hours_ratio: float = 0.1,
-    include_weekends_prob: float = 0.3,
+        num_of_assignments: int,
+        max_day_range: int = 30,
+        min_day_range: int = 2,
+        working_hours_ratio: float = 0.1,
+        include_weekends_prob: float = 0.3,
 ):
     year = 2023 + randint(-2, 0)
     for i in range(num_of_assignments):
-        assignment = {}
-        assignment["name"] = f"Assignment {i}"
-        assignment["include_weekends"] = (
-            False if random() > include_weekends_prob else True
-        )
+        assignment = {"name": f"Assignment {i}",
+                      "include_weekends": (
+                          False if random() > include_weekends_prob else True
+                      )}
         start = datetime.date(year, 1, 1)
         end = datetime.date(year, 12, 31)
         delta = end - start
