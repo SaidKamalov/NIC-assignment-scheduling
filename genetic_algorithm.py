@@ -7,7 +7,7 @@ class Chromosome:
         self.fitness: int = 0
 
     def __str__(self) -> str:
-        return str(self.genes)
+        return "\n".join(map(str, self.genes))
 
     def __repr__(self) -> str:
         return str(self.genes)
@@ -37,7 +37,7 @@ class GeneticAlgorithm:
 
     def _generate_chromosome(self) -> Chromosome:
         if self.generate_func:
-            return self.generate_func(self.possible_genes)
+            return Chromosome([self.generate_func(self.possible_genes) for _ in range(len(self.possible_genes))])
 
         return Chromosome(random.choices(self.possible_genes, k=len(self.possible_genes)))
 
@@ -82,12 +82,25 @@ class GeneticAlgorithm:
         return self.elite[0]
 
     def run(self, num_of_generations: int) -> Chromosome:
+        print("Starting genetic algorithm...")
         self.initialize()
-        for _ in range(num_of_generations):
+        for i in range(num_of_generations):
+            print(f"Generation {i + 1}/{num_of_generations}")
             self.evolve()
-        return self.get_best()
+
+        best_solution = self.get_best()
+        print(f"Best solution:\n{best_solution}")
+
+        return best_solution
 
 
 if __name__ == "__main__":
     # TODO: remove, just for testing
-    print(GeneticAlgorithm(possible_genes=[1, 2, 3, 4, 5]).run(10))
+    from assignment import get_assignments
+    from domain_to_ga import generate_rand_gene, AssignmentGene, random_mutate_time_slot
+
+    GeneticAlgorithm(
+        possible_genes=[AssignmentGene(assignment) for assignment in get_assignments(num_of_assignments=10)],
+        generate_func=generate_rand_gene,
+        fitness_func=lambda x: random.randint(0, 100),
+        mutate_func=random_mutate_time_slot).run(100)
