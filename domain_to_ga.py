@@ -7,7 +7,7 @@ from genetic_algorithm import Chromosome
 
 class AssignmentGene:
     def __init__(self, assignment: Assignment) -> None:
-        self.assignment = assignment
+        self.assignment: Assignment = assignment
         self.start: date = deepcopy(self.assignment.start_date)
         self.deadline: date = deepcopy(self.assignment.end_date)
         self.score: float = 0
@@ -24,30 +24,30 @@ class AssignmentGene:
         Function to get the time slot for the assignment in the give gene.
         Time slot is in [assignment.start_date; assignment.end_date].
         """
-        end_date = self.assignment.end_date
-        start_date = self.assignment.start_date
-        delta = end_date - start_date
-        duration = randint(2, delta.days)
-        free_time = delta.days - duration
+        end_date: date = self.assignment.end_date
+        start_date: date = self.assignment.start_date
+        delta: timedelta = end_date - start_date
+        duration: int = randint(2, delta.days)
+        free_time: int = delta.days - duration
 
-        start = start_date + timedelta(days=randint(0, free_time))
-        deadline = start + timedelta(days=duration)
+        start: date = start_date + timedelta(days=randint(0, free_time))
+        deadline: date = start + timedelta(days=duration)
         return start, deadline
 
 
 def generate_chromo(genes: list[AssignmentGene]) -> Chromosome:
     """Function to create new chromosome"""
-    genes_for_chromo = [generate_rand_gene(gene) for gene in genes]
-    chromo = Chromosome(genes_for_chromo)
+    genes_for_chromo: list[AssignmentGene] = [generate_rand_gene(gene) for gene in genes]
+    chromo: Chromosome = Chromosome(genes_for_chromo)
     return chromo
 
 
-def generate_rand_gene(genes: list[AssignmentGene]) -> AssignmentGene:
+def generate_rand_gene(gene: AssignmentGene) -> AssignmentGene:
     """
     Function to create copy of a given gene,
     but assign random time slot for the assignment.
     """
-    new_gene = AssignmentGene(choice(genes).assignment)
+    new_gene = AssignmentGene(gene.assignment)
     new_gene.start, new_gene.deadline = new_gene.rand_time_slot()
     return new_gene
 

@@ -28,7 +28,7 @@ def _generate_assignments(
         working_hours_ratio: float = 0.1,
         include_weekends_prob: float = 0.3,
 ):
-    year = 2023 + randint(-2, 0)
+    year: int = 2023 + randint(-2, 0)
     for i in range(num_of_assignments):
         assignment = {"name": f"Assignment {i}",
                       "include_weekends": (
