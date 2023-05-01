@@ -22,6 +22,12 @@ class AssignmentGene:
         res += f"score is {self.score}"
         return res
 
+    def __lt__(self, other) -> bool:
+        if self.start == other.start:
+            return self.deadline <= other.deadline
+        else:
+            return self.start < other.start
+
     def rand_time_slot(self) -> tuple[date, date]:
         """
         Function to get the time slot for the assignment in the give gene.
@@ -40,7 +46,9 @@ class AssignmentGene:
 
 def generate_chromo(genes: list[AssignmentGene]) -> Chromosome:
     """Function to create new chromosome"""
-    genes_for_chromo: list[AssignmentGene] = [generate_rand_gene(gene) for gene in genes]
+    genes_for_chromo: list[AssignmentGene] = [
+        generate_rand_gene(gene) for gene in genes
+    ]
     chromo: Chromosome = Chromosome(genes_for_chromo)
     return chromo
 
@@ -75,8 +83,24 @@ class Fitness:
 
     @staticmethod
     def fitness(genes: list[AssignmentGene]):
-        assignments = sorted([gene.assignment for gene in genes])
-        pass
+        genes_sorted = sorted(genes)
+
+        # count overlapping
+        overlap_count = 0
+        for i in range(len(genes_sorted) - 1):
+            if genes_sorted[i].deadline > genes_sorted[i + 1].start:
+                overlap_count += 1
+
+        # check time
+        time_issues = 0
+        for gene in genes:
+            available_time = Fitness._SCHEDULE.get_free_time(
+                from_=gene.start, to=gene.deadline
+            )
+            if available_time < gene.assignment.hours_to_complete:
+                time_issues += 1
+
+        return -(overlap_count + time_issues)
 
 
 if __name__ == "__main__":
