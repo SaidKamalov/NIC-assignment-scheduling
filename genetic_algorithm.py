@@ -37,7 +37,7 @@ class GeneticAlgorithm:
 
     def _generate_chromosome(self) -> Chromosome:
         if self.generate_func:
-            return Chromosome([self.generate_func(self.possible_genes) for _ in range(len(self.possible_genes))])
+            return self.generate_func(self.possible_genes)
 
         return Chromosome(random.choices(self.possible_genes, k=len(self.possible_genes)))
 
@@ -71,7 +71,7 @@ class GeneticAlgorithm:
     def calculate_fitness(self) -> None:
         for chromosome in self.population:
             chromosome.fitness = (self.fitness_func(chromosome) if self.fitness_func else sum(chromosome.genes))
-            self.elite = self._get_elite()
+        self.elite = self._get_elite()
 
     def evolve(self) -> None:
         self.crossover()
@@ -97,10 +97,10 @@ class GeneticAlgorithm:
 if __name__ == "__main__":
     # TODO: remove, just for testing
     from assignment import get_assignments
-    from domain_to_ga import generate_rand_gene, AssignmentGene, random_mutate_time_slot
+    from domain_to_ga import generate_chromo, AssignmentGene, random_mutate_time_slot
 
     GeneticAlgorithm(
         possible_genes=[AssignmentGene(assignment) for assignment in get_assignments(num_of_assignments=10)],
-        generate_func=generate_rand_gene,
+        generate_func=generate_chromo,
         fitness_func=lambda x: random.randint(0, 100),
         mutate_func=random_mutate_time_slot).run(100)
