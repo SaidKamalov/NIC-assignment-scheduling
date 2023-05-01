@@ -12,7 +12,12 @@ class Schedule:
     """Just prototype with random initialization"""
 
     # TODO: add import of a real schedule
-    def __init__(self, path: str | None = None, study_year: str | None = None, track: str | None = None) -> None:
+    def __init__(
+        self,
+        path: str | None = None,
+        study_year: str | None = None,
+        track: str | None = None,
+    ) -> None:
         self.assignments: list[Assignment] = get_assignments(
             path=path, num_of_assignments=3
         )
@@ -39,7 +44,9 @@ class Schedule:
         if self.study_year is not None and self.track is not None:
             free_hours = get_free_hours_per_day(self.study_year, self.track)
             if len(free_hours) == 0:
-                raise ValueError("No free hours found for the given study year and track")
+                raise ValueError(
+                    "No free hours found for the given study year and track"
+                )
         else:
             free_hours = {str(i): randint(0, AVG_STUDY_HOURS_PER_DAY) for i in range(7)}
 
@@ -47,9 +54,20 @@ class Schedule:
             new_date = first_date + timedelta(days=day)
             self.days[new_date] = free_hours[str(new_date.weekday())]
 
+    def get_free_time(self, from_: date, to: date):
+        delta = (to - from_).days
+        free_hours = 0.0
+        for day in range(0, delta + 1):
+            free_hours += self.days.get(from_ + timedelta(days=day), 0)
+        return free_hours
+
 
 if __name__ == "__main__":
     # TODO: remove, just for testing
-    test_schedule = Schedule(study_year='BS1', track='CS')
+    test_schedule = Schedule(study_year="BS1", track="CS")
     for k, v in test_schedule.days.items():
         print(k, v)
+
+    from_ = list(test_schedule.days.keys())[0]
+    to = list(test_schedule.days.keys())[2]
+    print(test_schedule.get_free_time(from_, to))
