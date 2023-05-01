@@ -3,6 +3,9 @@ from datetime import date, timedelta
 from random import randint, choice, random
 from copy import deepcopy
 from genetic_algorithm import Chromosome
+from schedule import Schedule
+
+PATH_TO_SCHEDULE = ""
 
 
 class AssignmentGene:
@@ -52,16 +55,28 @@ def generate_rand_gene(genes: list[AssignmentGene]) -> AssignmentGene:
     return new_gene
 
 
-def random_mutate_time_slot(population: list[Chromosome], mutation_rate: float, *args) -> list[Chromosome]:
+def random_mutate_time_slot(
+    population: list[Chromosome], mutation_rate: float, *args
+) -> list[Chromosome]:
     """
     Function to mutate population.
     """
     for i in range(len(population)):
         for j in range(len(population[i].genes)):
             if random() < mutation_rate:
-                population[i].genes[j].start_date, population[i].genes[j].end_date = population[i].genes[
-                    j].rand_time_slot()
+                population[i].genes[j].start_date, population[i].genes[j].end_date = (
+                    population[i].genes[j].rand_time_slot()
+                )
     return population
+
+
+class Fitness:
+    _SCHEDULE = Schedule(PATH_TO_SCHEDULE)
+
+    @staticmethod
+    def fitness(genes: list[AssignmentGene]):
+        assignments = sorted([gene.assignment for gene in genes])
+        pass
 
 
 if __name__ == "__main__":
