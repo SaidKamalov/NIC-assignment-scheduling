@@ -17,9 +17,10 @@ class Schedule:
         path: str | None = None,
         study_year: str | None = None,
         track: str | None = None,
+        num_of_assignments: int = 5,
     ) -> None:
         self.assignments: list[Assignment] = get_assignments(
-            path=path, num_of_assignments=3
+            path=path, num_of_assignments=num_of_assignments
         )
         # The earliest and the latest date for all assignments
         self.start: date

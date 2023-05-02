@@ -14,14 +14,18 @@ class Chromosome:
 
 
 class GeneticAlgorithm:
-    def __init__(self, possible_genes: list,
-                 population_size: int = 500, elite_size: int = 200,
-                 mutation_rate: float = 0.2,
-                 crossover_rate: float = 0.5,
-                 mutate_func=None,
-                 crossover_func=None,
-                 generate_func=None,
-                 fitness_func=None) -> None:
+    def __init__(
+        self,
+        possible_genes: list,
+        population_size: int = 500,
+        elite_size: int = 200,
+        mutation_rate: float = 0.2,
+        crossover_rate: float = 0.5,
+        mutate_func=None,
+        crossover_func=None,
+        generate_func=None,
+        fitness_func=None,
+    ) -> None:
         self.possible_genes: list = possible_genes
         self.population_size: int = population_size
         self.elite_size: int = elite_size
@@ -37,12 +41,17 @@ class GeneticAlgorithm:
 
     def _generate_chromosome(self) -> Chromosome:
         if self.generate_func:
-            return self.generate_func(self.possible_genes)
+            new_chromosome = Chromosome(self.generate_func(self.possible_genes))
+            return new_chromosome
 
-        return Chromosome(random.choices(self.possible_genes, k=len(self.possible_genes)))
+        return Chromosome(
+            random.choices(self.possible_genes, k=len(self.possible_genes))
+        )
 
     def _get_elite(self) -> list[Chromosome]:
-        return sorted(self.population, key=lambda x: x.fitness, reverse=True)[:self.elite_size]
+        return sorted(self.population, key=lambda x: x.fitness, reverse=True)[
+            : self.elite_size
+        ]
 
     def crossover(self) -> None:
         if self.crossover_func:
@@ -52,12 +61,17 @@ class GeneticAlgorithm:
             if random.random() < self.crossover_rate:
                 parent1 = random.choice(self.elite)
                 parent2 = random.choice(self.elite)
-                child = parent1.genes[:len(parent1.genes) // 2] + parent2.genes[len(parent2.genes) // 2:]
+                child = (
+                    parent1.genes[: len(parent1.genes) // 2]
+                    + parent2.genes[len(parent2.genes) // 2 :]
+                )
                 self.population[i] = Chromosome(child)
 
     def mutate(self) -> None:
         if self.mutate_func:
-            self.population = self.mutate_func(self.population, self.mutation_rate, self.possible_genes)
+            self.population = self.mutate_func(
+                self.population, self.mutation_rate, self.possible_genes
+            )
 
         for i in range(self.elite_size, self.population_size):
             for j in range(len(self.population[i].genes)):
@@ -65,12 +79,18 @@ class GeneticAlgorithm:
                     self.population[i].genes[j] = random.choice(self.possible_genes)
 
     def initialize(self) -> None:
-        self.population = [self._generate_chromosome() for _ in range(self.population_size)]
+        self.population = [
+            self._generate_chromosome() for _ in range(self.population_size)
+        ]
         self.elite = self._get_elite()
 
     def calculate_fitness(self) -> None:
         for chromosome in self.population:
-            chromosome.fitness = (self.fitness_func(chromosome) if self.fitness_func else sum(chromosome.genes))
+            chromosome.fitness = (
+                self.fitness_func(chromosome.genes)
+                if self.fitness_func
+                else sum(chromosome.genes)
+            )
         self.elite = self._get_elite()
 
     def evolve(self) -> None:
@@ -97,10 +117,19 @@ class GeneticAlgorithm:
 if __name__ == "__main__":
     # TODO: remove, just for testing
     from assignment import get_assignments
-    from domain_to_ga import generate_chromo, AssignmentGene, random_mutate_time_slot
+    from domain_to_ga import (
+        generate_chromo,
+        AssignmentGene,
+        random_mutate_time_slot,
+        SCHEDULE,
+        fitness,
+    )
 
     GeneticAlgorithm(
-        possible_genes=[AssignmentGene(assignment) for assignment in get_assignments(num_of_assignments=10)],
+        possible_genes=[
+            AssignmentGene(assignment) for assignment in SCHEDULE.assignments
+        ],
         generate_func=generate_chromo,
-        fitness_func=lambda x: random.randint(0, 100),
-        mutate_func=random_mutate_time_slot).run(100)
+        fitness_func=fitness,
+        mutate_func=random_mutate_time_slot,
+    ).run(100)

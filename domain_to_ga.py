@@ -5,7 +5,13 @@ from copy import deepcopy
 from genetic_algorithm import Chromosome
 from schedule import Schedule
 
-PATH_TO_SCHEDULE = ""
+PATH = None
+TRACK = "CS"
+STUDY_YEAR = "BS1"
+
+SCHEDULE = Schedule(
+    path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=10
+)
 
 
 class AssignmentGene:
@@ -44,13 +50,13 @@ class AssignmentGene:
         return start, deadline
 
 
-def generate_chromo(genes: list[AssignmentGene]) -> Chromosome:
+def generate_chromo(genes: list[AssignmentGene]) -> list[AssignmentGene]:
     """Function to create new chromosome"""
     genes_for_chromo: list[AssignmentGene] = [
         generate_rand_gene(gene) for gene in genes
     ]
-    chromo: Chromosome = Chromosome(genes_for_chromo)
-    return chromo
+    # chromo: Chromosome = Chromosome(genes_for_chromo)
+    return genes_for_chromo
 
 
 def generate_rand_gene(gene: AssignmentGene) -> AssignmentGene:
@@ -78,46 +84,60 @@ def random_mutate_time_slot(
     return population
 
 
-class Fitness:
-    _SCHEDULE = Schedule(PATH_TO_SCHEDULE)
+def fitness(genes: list[AssignmentGene]):
+    genes_sorted = sorted(genes)
 
-    @staticmethod
-    def fitness(genes: list[AssignmentGene]):
-        genes_sorted = sorted(genes)
+    # count overlapping
+    overlap_count = 0
+    for i in range(len(genes_sorted) - 1):
+        if genes_sorted[i].deadline > genes_sorted[i + 1].start:
+            overlap_count += 1
 
-        # count overlapping
-        overlap_count = 0
-        for i in range(len(genes_sorted) - 1):
-            if genes_sorted[i].deadline > genes_sorted[i + 1].start:
-                overlap_count += 1
+    # check time
+    time_issues = 0
+    for gene in genes:
+        available_time = SCHEDULE.get_free_time(from_=gene.start, to=gene.deadline)
+        if available_time < gene.assignment.hours_to_complete:
+            time_issues += 1
 
-        # check time
-        time_issues = 0
-        for gene in genes:
-            available_time = Fitness._SCHEDULE.get_free_time(
-                from_=gene.start, to=gene.deadline
-            )
-            if available_time < gene.assignment.hours_to_complete:
-                time_issues += 1
-
-        return -(overlap_count + time_issues)
+    return -(overlap_count + time_issues)
 
 
 if __name__ == "__main__":
     # TODO: remove, just for testing
-    from input_handling.input import _generate_assignments
+    print("Assignment list:")
+    for assignment in SCHEDULE.assignments:
+        print(assignment)
+    print()
+    print("list possible genes:")
+    possible_genes = [AssignmentGene(assignment) for assignment in SCHEDULE.assignments]
+    for gene in possible_genes:
+        print(gene)
+    print()
+    print("list genes in chromosome")
+    genes_for_chromo = generate_chromo(possible_genes)
+    for gene in genes_for_chromo:
+        print(gene)
+    print()
+    fitness_score = fitness(genes=genes_for_chromo)
+    print("fitness sore of chromo", fitness_score)
 
-    assignments = [Assignment(**ass) for ass in _generate_assignments(2)]
-    genes = [AssignmentGene(ass) for ass in assignments]
-    print("initial genes:")
-    for gene in genes:
-        print(gene)
-    print()
-    print("generated chromo:")
-    chromo = generate_chromo(genes)
-    for gene in chromo.genes:
-        print(gene)
-    print()
-    print("check initial genes:")
-    for gene in genes:
-        print(gene)
+    # from input_handling.input import _generate_assignments
+
+    # assignments = [Assignment(**ass) for ass in _generate_assignments(5)]
+    # genes = [AssignmentGene(ass) for ass in assignments]
+    # print("initial genes:")
+    # for gene in genes:
+    #     print(gene)
+    # print()
+    # print("generated chromo:")
+    # chromo = generate_chromo(genes)
+    # for gene in chromo.genes:
+    #     print(gene)
+    # print()
+    # print("check initial genes:")
+    # for gene in genes:
+    #     print(gene)
+    # print()
+    # print("fitness score")
+    # print(Fitness.fitness(chromo.genes))
