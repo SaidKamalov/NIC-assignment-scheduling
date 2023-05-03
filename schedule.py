@@ -11,7 +11,6 @@ AVG_STUDY_HOURS_PER_DAY = 6
 class Schedule:
     """Just prototype with random initialization"""
 
-    # TODO: add import of a real schedule
     def __init__(
         self,
         path: str | None = None,

@@ -9,9 +9,7 @@ PATH = None
 TRACK = "CS"
 STUDY_YEAR = "BS1"
 
-SCHEDULE = Schedule(
-    path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=10
-)
+SCHEDULE = Schedule(path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=3)
 
 
 class AssignmentGene:
@@ -84,6 +82,14 @@ def random_mutate_time_slot(
     return population
 
 
+def random_mutate_genes(
+    genes: list[AssignmentGene], mutation_rate: float, *args
+) -> None:
+    for gene in genes:
+        if random() < mutation_rate:
+            gene.start, gene.deadline = gene.rand_time_slot()
+
+
 def fitness(genes: list[AssignmentGene]):
     genes_sorted = sorted(genes)
 
@@ -118,6 +124,11 @@ if __name__ == "__main__":
     genes_for_chromo = generate_chromo(possible_genes)
     for gene in genes_for_chromo:
         print(gene)
+    print()
+    print("list chromosome genes after mutation")
+    random_mutate_genes(genes_for_chromo, mutation_rate=0.8)
+    for gen in genes_for_chromo:
+        print(gen)
     print()
     fitness_score = fitness(genes=genes_for_chromo)
     print("fitness sore of chromo", fitness_score)
