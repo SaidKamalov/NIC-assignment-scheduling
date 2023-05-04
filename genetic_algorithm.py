@@ -1,5 +1,6 @@
 import random
 from copy import deepcopy
+import tqdm
 
 
 class Chromosome:
@@ -8,7 +9,7 @@ class Chromosome:
         self.fitness: int = 0
 
     def __str__(self) -> str:
-        return "\n".join(map(str, self.genes)) + f"\nchromosome score ={self.fitness}"
+        return "\n".join(map(str, self.genes)) + f"\nchromosome score = {self.fitness}"
 
     def __repr__(self) -> str:
         return str(self.genes)
@@ -16,17 +17,17 @@ class Chromosome:
 
 class GeneticAlgorithm:
     def __init__(
-        self,
-        possible_genes: list,
-        population_size: int = 500,
-        elite_size: int = 200,
-        mutation_rate: float = 0.2,
-        crossover_rate: float = 0.5,
-        early_stop: int = 3,
-        mutate_func=None,
-        crossover_func=None,
-        generate_func=None,
-        fitness_func=None,
+            self,
+            possible_genes: list,
+            population_size: int = 500,
+            elite_size: int = 200,
+            mutation_rate: float = 0.2,
+            crossover_rate: float = 0.5,
+            early_stop: int = 3,
+            mutate_func=None,
+            crossover_func=None,
+            generate_func=None,
+            fitness_func=None,
     ) -> None:
         self.possible_genes: list = possible_genes
         self.population_size: int = population_size
@@ -53,8 +54,8 @@ class GeneticAlgorithm:
 
     def _get_elite(self) -> list[Chromosome]:
         return sorted(self.population, key=lambda x: x.fitness, reverse=True)[
-            : self.elite_size
-        ]
+               : self.elite_size
+               ]
 
     def crossover(self) -> None:
         if self.crossover_func:
@@ -73,26 +74,19 @@ class GeneticAlgorithm:
             for i in range(len(elite)):
                 for j in range(i + 1, len(elite)):
                     c1_genes = (
-                        elite[i].genes[: len(elite[i].genes) // 2]
-                        + elite[j].genes[len(elite[j].genes) // 2 :]
+                            elite[i].genes[: len(elite[i].genes) // 2]
+                            + elite[j].genes[len(elite[j].genes) // 2:]
                     )
                     c2_genes = (
-                        elite[j].genes[: len(elite[j].genes) // 2]
-                        + elite[i].genes[len(elite[i].genes) // 2 :]
+                            elite[j].genes[: len(elite[j].genes) // 2]
+                            + elite[i].genes[len(elite[i].genes) // 2:]
                     )
                     children.append(Chromosome(c1_genes))
                     children.append(Chromosome(c2_genes))
             self.population = (children + elite)[: self.population_size]
-
-        # for i in range(self.elite_size, self.population_size):
-        #     if random.random() < self.crossover_rate:
-        #         parent1 = random.choice(self.elite)
-        #         parent2 = random.choice(self.elite)
-        #         child = (
-        #             parent1.genes[: len(parent1.genes) // 2]
-        #             + parent2.genes[len(parent2.genes) // 2 :]
-        #         )
-        #         self.population[i] = Chromosome(child)
+        if len(self.population) < self.population_size:
+            self.population += [self._generate_chromosome() for _ in
+                                range(self.population_size - len(self.population))]
 
     def mutate(self) -> None:
         if self.mutate_func:
@@ -105,16 +99,6 @@ class GeneticAlgorithm:
                         self.population[i].genes[j] = deepcopy(
                             random.choice(self.possible_genes)
                         )
-
-        # if self.mutate_func:
-        #     self.population = self.mutate_func(
-        #         self.population, self.mutation_rate, self.possible_genes
-        #     )
-
-        # for i in range(self.elite_size, self.population_size):
-        #     for j in range(len(self.population[i].genes)):
-        #         if random.random() < self.mutation_rate:
-        #             self.population[i].genes[j] = random.choice(self.possible_genes)
 
     def initialize(self) -> None:
         self.population = [
@@ -144,14 +128,16 @@ class GeneticAlgorithm:
         self.initialize()
         best_score = self.get_best().fitness
         init_early_stop = self.early_stop
-        for i in range(num_of_generations):
+        bar = tqdm.tqdm(range(num_of_generations))
+        for i in bar:
             self.evolve()
             if best_score >= self.get_best().fitness:
                 self.early_stop -= 1
             else:
                 self.early_stop = init_early_stop
             best_score = self.get_best().fitness
-            print(f"Generation {i + 1}/{num_of_generations}, score={best_score}")
+
+            bar.set_postfix_str(f"Best score: {best_score}")
             if self.early_stop <= 0:
                 break
 

@@ -41,17 +41,3 @@ def get_assignments(path: str | None = None, **kwargs) -> list[Assignment]:
             Assignment(**assignment) for assignment in _read_assignments(path)
         ]
     return assignments
-
-
-if __name__ == "__main__":
-    # TODO: remove, just for testing
-    for ass in get_assignments("./input_handling/assignments-example.json"):
-        print(ass)
-    print("generated and sorted:")
-    generated_ass = []
-    for ass in get_assignments(
-            num_of_assignments=5, max_day_range=10, include_weekends_prob=0.9
-    ):
-        generated_ass.append(ass)
-    for ass in sorted(generated_ass):
-        print(ass)

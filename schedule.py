@@ -40,8 +40,6 @@ class Schedule:
         self.start = deepcopy(first_date)
         self.end = deepcopy(last_date)
 
-        print(f"from: {self.start} to {self.end}")
-
         if self.study_year is not None and self.track is not None:
             free_hours = get_free_hours_per_day(self.study_year, self.track, PATH)
             if len(free_hours) == 0:
@@ -53,10 +51,10 @@ class Schedule:
 
         for day in range((last_date - first_date).days + 1):
             new_date = first_date + timedelta(days=day)
-            self.days[new_date] = free_hours[str(new_date.weekday())]
+            self.days[new_date] = float(free_hours[str(new_date.weekday())])
 
     def get_free_time(self, from_: date, to: date, include_weekends: bool = False):
-        delta = (to - from_).days
+        delta = abs((to - from_).days)
         free_hours = 0.0
         for day in range(0, delta + 1):
             new_date = from_ + timedelta(days=day)
@@ -64,14 +62,3 @@ class Schedule:
                 continue
             free_hours += self.days.get(from_ + timedelta(days=day), 0)
         return free_hours
-
-
-if __name__ == "__main__":
-    # TODO: remove, just for testing
-    test_schedule = Schedule(study_year="BS1", track="CS")
-    for k, v in test_schedule.days.items():
-        print(k, v)
-
-    from_ = list(test_schedule.days.keys())[0]
-    to = list(test_schedule.days.keys())[2]
-    print(test_schedule.get_free_time(from_, to))

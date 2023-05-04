@@ -6,7 +6,7 @@ PATH = "../input_handling/inno_number_of_classes.json"
 
 
 def test_get_free_hours():
-    print("------------------------------")
+    print("-" * 20)
     print("Running tests for input_handling/get_free_hours.py")
 
     variants = {'BS1': ['CS', 'DSAI'],
@@ -48,7 +48,7 @@ def test_get_free_hours():
 
 
 def test_input():
-    print("------------------------------")
+    print("-" * 20)
     print("Running tests for input_handling/input.py")
 
     print("1) Testing _read_assignments() function")
@@ -167,5 +167,3 @@ def test_input():
 if __name__ == '__main__':
     test_get_free_hours()
     test_input()
-    print("------------------------------")
-    print("All tests passed successfully!")
