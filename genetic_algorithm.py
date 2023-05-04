@@ -58,17 +58,41 @@ class GeneticAlgorithm:
 
     def crossover(self) -> None:
         if self.crossover_func:
-            self.population = self.crossover_func(self.population, self.crossover_rate)
+            elite = self._get_elite()
+            children = []
+            for i in range(len(elite)):
+                for j in range(i + 1, len(elite)):
+                    c1, c2 = self.crossover_func(elite[i].genes, elite[j].genes)
+                    children.append(Chromosome(c1))
+                    children.append(Chromosome(c2))
+            new_pop = elite + children
+            self.population = new_pop[: self.population_size]
+        else:
+            elite = self._get_elite()
+            children = []
+            for i in range(len(elite)):
+                for j in range(i + 1, len(elite)):
+                    c1_genes = (
+                        elite[i].genes[: len(elite[i].genes) // 2]
+                        + elite[j].genes[len(elite[j].genes) // 2 :]
+                    )
+                    c2_genes = (
+                        elite[j].genes[: len(elite[j].genes) // 2]
+                        + elite[i].genes[len(elite[i].genes) // 2 :]
+                    )
+                    children.append(Chromosome(c1_genes))
+                    children.append(Chromosome(c2_genes))
+            self.population = (children + elite)[: self.population_size]
 
-        for i in range(self.elite_size, self.population_size):
-            if random.random() < self.crossover_rate:
-                parent1 = random.choice(self.elite)
-                parent2 = random.choice(self.elite)
-                child = (
-                    parent1.genes[: len(parent1.genes) // 2]
-                    + parent2.genes[len(parent2.genes) // 2 :]
-                )
-                self.population[i] = Chromosome(child)
+        # for i in range(self.elite_size, self.population_size):
+        #     if random.random() < self.crossover_rate:
+        #         parent1 = random.choice(self.elite)
+        #         parent2 = random.choice(self.elite)
+        #         child = (
+        #             parent1.genes[: len(parent1.genes) // 2]
+        #             + parent2.genes[len(parent2.genes) // 2 :]
+        #         )
+        #         self.population[i] = Chromosome(child)
 
     def mutate(self) -> None:
         if self.mutate_func:
@@ -146,14 +170,17 @@ if __name__ == "__main__":
         SCHEDULE,
         fitness,
         random_mutate_genes,
+        crossover,
     )
 
     GeneticAlgorithm(
         possible_genes=[
             AssignmentGene(assignment) for assignment in SCHEDULE.assignments
         ],
-        early_stop=5,
+        early_stop=100,
         generate_func=generate_chromo,
         fitness_func=fitness,
         mutate_func=random_mutate_genes,
-    ).run(100)
+        crossover_func=crossover,
+        mutation_rate=0.1,
+    ).run(50)

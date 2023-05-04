@@ -9,7 +9,9 @@ PATH = None
 TRACK = "CS"
 STUDY_YEAR = "BS1"
 
-SCHEDULE = Schedule(path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=3)
+SCHEDULE = Schedule(
+    path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=20
+)
 
 
 class AssignmentGene:
@@ -88,7 +90,33 @@ def fitness(genes: list[AssignmentGene]):
         if available_time < gene.assignment.hours_to_complete:
             time_issues += 1
 
+        if (
+            gene.assignment.hours_to_complete
+            > (gene.deadline - gene.start).days * 24 * 0.1
+        ):
+            time_issues += 1
+        if gene.assignment.hours_to_complete < 0.3 * available_time:
+            time_issues += 1
+
     return -(overlap_count + time_issues)
+
+
+def crossover(
+    p1: list[AssignmentGene], p2: list[AssignmentGene]
+) -> tuple[list[AssignmentGene], list[AssignmentGene]]:
+    # p1, p2 = sorted(parent1), sorted(parent2)
+    c1: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p1]
+    c2: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p2]
+    for i in range(len(p1) - 1):
+        if p1[i].deadline > p1[i + 1].start and p2[i].deadline <= p1[i + 1].start:
+            c1[i].start, c1[i].deadline = deepcopy(p2[i].start), deepcopy(
+                p2[i].deadline
+            )
+        elif p2[i].deadline > p2[i + 1].start and p1[i].deadline <= p2[i + 1].start:
+            c2[i].start, c2[i].deadline = deepcopy(p1[i].start), deepcopy(
+                p1[i].deadline
+            )
+    return c1, c2
 
 
 if __name__ == "__main__":
@@ -114,3 +142,24 @@ if __name__ == "__main__":
     print()
     fitness_score = fitness(genes=genes_for_chromo)
     print("fitness sore of chromo", fitness_score)
+    print("##########")
+    print("test custom crossover:")
+    parent1 = generate_chromo(possible_genes)
+    print("parent1:")
+    for gene in parent1:
+        print(gene)
+    print()
+    parent2 = generate_chromo(possible_genes)
+    print("parent2:")
+    for gene in parent2:
+        print(gene)
+    print()
+    c1, c2 = crossover(parent1, parent2)
+    print("child1:")
+    for gene in c1:
+        print(gene)
+    print()
+    print("child2:")
+    for gene in c2:
+        print(gene)
+    print()
