@@ -18,11 +18,11 @@ def check_structure(assignment: dict) -> bool:
         return False
 
     elif (
-        not isinstance(assignment["name"], str)
-        or not isinstance(assignment["start_date"], str)
-        or not isinstance(assignment["end_date"], str)
-        or not isinstance(assignment["hours_to_complete"], int)
-        or not isinstance(assignment["include_weekends"], bool)
+            not isinstance(assignment["name"], str)
+            or not isinstance(assignment["start_date"], str)
+            or not isinstance(assignment["end_date"], str)
+            or not isinstance(assignment["hours_to_complete"], int)
+            or not isinstance(assignment["include_weekends"], bool)
     ):
         print("Error while reading assignments from json file: " "invalid field types")
         return False
@@ -76,12 +76,23 @@ def _read_assignments(path_to_json: str):
 
 
 def _generate_assignments(
-    num_of_assignments: int,
-    max_day_range: int = 30,
-    min_day_range: int = 2,
-    working_hours_ratio: float = 0.1,
-    include_weekends_prob: float = 0.3,
+        num_of_assignments: int,
+        max_day_range: int = 30,
+        min_day_range: int = 2,
+        working_hours_ratio: float = 0.1,
+        include_weekends_prob: float = 0.3,
 ):
+    if num_of_assignments <= 0 or \
+            max_day_range <= 0 or \
+            min_day_range <= 0 or \
+            working_hours_ratio <= 0 or \
+            working_hours_ratio > 1 or \
+            include_weekends_prob <= 0 or \
+            include_weekends_prob > 1 or \
+            max_day_range < min_day_range:
+        print("Error while generating assignments: invalid arguments")
+        return
+
     year: int = 2023 + randint(-2, 0)
     for i in range(num_of_assignments):
         assignment = {
@@ -97,9 +108,10 @@ def _generate_assignments(
         assignment["start_date"] = start_date
         assignment["end_date"] = end_date
 
-        assignment["hours_to_complete"] = randint(
-            2, int((end_date - start_date).days * 24 * working_hours_ratio)
-        )
+        hours = int((end_date - start_date).days * 24 * working_hours_ratio)
+        if hours <= 0:
+            hours = 2
+        assignment["hours_to_complete"] = randint(2, hours)
 
         yield assignment
 

@@ -6,6 +6,7 @@ from random import randint
 from input_handling.get_free_hours import get_free_hours_per_day
 
 AVG_STUDY_HOURS_PER_DAY = 6
+PATH = "input_handling/inno_number_of_classes.json"
 
 
 class Schedule:
@@ -42,7 +43,7 @@ class Schedule:
         print(f"from: {self.start} to {self.end}")
 
         if self.study_year is not None and self.track is not None:
-            free_hours = get_free_hours_per_day(self.study_year, self.track)
+            free_hours = get_free_hours_per_day(self.study_year, self.track, PATH)
             if len(free_hours) == 0:
                 raise ValueError(
                     "No free hours found for the given study year and track"

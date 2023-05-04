@@ -96,7 +96,7 @@ class GeneticAlgorithm:
 
     def mutate(self) -> None:
         if self.mutate_func:
-            for chromosome in self.population:
+            for chromosome in self.population[self.elite_size:]:
                 self.mutate_func(chromosome.genes, self.mutation_rate)
         else:
             for i in range(self.elite_size, self.population_size):
@@ -178,9 +178,11 @@ if __name__ == "__main__":
             AssignmentGene(assignment) for assignment in SCHEDULE.assignments
         ],
         early_stop=100,
+        elite_size=150,
+        population_size=4000,
         generate_func=generate_chromo,
         fitness_func=fitness,
         mutate_func=random_mutate_genes,
         crossover_func=crossover,
-        mutation_rate=0.1,
-    ).run(50)
+        mutation_rate=1,
+    ).run(100)
