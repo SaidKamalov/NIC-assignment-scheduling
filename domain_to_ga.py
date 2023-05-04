@@ -1,8 +1,7 @@
 from assignment import Assignment
 from datetime import date, timedelta
-from random import randint, choice, random
+from random import randint, random
 from copy import deepcopy
-from genetic_algorithm import Chromosome
 from schedule import Schedule
 
 PATH = None
@@ -65,7 +64,7 @@ def generate_rand_gene(gene: AssignmentGene) -> AssignmentGene:
 
 
 def random_mutate_genes(
-    genes: list[AssignmentGene], mutation_rate: float, *args
+        genes: list[AssignmentGene], mutation_rate: float, *args
 ) -> None:
     for gene in genes:
         if random() < mutation_rate:

@@ -3,22 +3,70 @@ import datetime
 from datetime import date, timedelta
 from random import randint, random
 
+ASSIGNMENT_FIELDS = {
+    "name",
+    "start_date",
+    "end_date",
+    "hours_to_complete",
+    "include_weekends"
+}
+
+
+def check_structure(assignment: dict) -> bool:
+    if set(assignment.keys()) != ASSIGNMENT_FIELDS:
+        print("Error while reading assignments from json file: "
+              "invalid fields")
+        return False
+
+    elif not isinstance(assignment["name"], str) or \
+            not isinstance(assignment["start_date"], str) or \
+            not isinstance(assignment["end_date"], str) or \
+            not isinstance(assignment["hours_to_complete"], int) or \
+            not isinstance(assignment["include_weekends"], bool):
+        print("Error while reading assignments from json file: "
+              "invalid field types")
+        return False
+
+    elif assignment["start_date"] > assignment["end_date"]:
+        print("Error while reading assignments from json file: "
+              "start_date is greater than end_date")
+        return False
+
+    elif assignment["hours_to_complete"] <= 0:
+        print("Error while reading assignments from json file: "
+              "hours_to_complete is less than or equal to zero")
+        return False
+
+    else:
+        try:
+            # convert start_date to date obj
+            start_date = list(map(int, assignment["start_date"].split("-")))
+            # convert end_date to date obj
+            end_date = list(map(int, assignment["end_date"].split("-")))
+            return True
+        except Exception as e:
+            print("Error while reading assignments from json file:", e)
+            return False
+
 
 def _read_assignments(path_to_json: str):
     with open(path_to_json, "r") as file:
         assignments = json.load(file)
         for assignment in assignments["assignments"]:
-            # convert start_date to date obj
-            start_date = list(map(int, assignment["start_date"].split("-")))
-            assignment["start_date"] = date(
-                year=start_date[0], month=start_date[1], day=start_date[2]
-            )
-            # convert end_date to date obj
-            end_date = list(map(int, assignment["end_date"].split("-")))
-            assignment["end_date"] = date(
-                year=end_date[0], month=end_date[1], day=end_date[2]
-            )
-            yield assignment
+            if not check_structure(assignment):
+                yield None
+            else:
+                # convert start_date to date obj
+                start_date = list(map(int, assignment["start_date"].split("-")))
+                assignment["start_date"] = date(
+                    year=start_date[0], month=start_date[1], day=start_date[2]
+                )
+                # convert end_date to date obj
+                end_date = list(map(int, assignment["end_date"].split("-")))
+                assignment["end_date"] = date(
+                    year=end_date[0], month=end_date[1], day=end_date[2]
+                )
+                yield assignment
 
 
 def _generate_assignments(
@@ -50,5 +98,6 @@ def _generate_assignments(
         yield assignment
 
 
-if __name__ == "__main__":
-    pass
+if __name__ == '__main__':
+    for assignment in _read_assignments('../tests/test-assignments.json'):
+        print(assignment)
