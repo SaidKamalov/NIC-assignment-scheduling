@@ -19,11 +19,11 @@ def check_structure(assignment: dict) -> bool:
         return False
 
     elif (
-            not isinstance(assignment["name"], str)
-            or not isinstance(assignment["start_date"], str)
-            or not isinstance(assignment["end_date"], str)
-            or not isinstance(assignment["hours_to_complete"], int)
-            or not isinstance(assignment["include_weekends"], bool)
+        not isinstance(assignment["name"], str)
+        or not isinstance(assignment["start_date"], str)
+        or not isinstance(assignment["end_date"], str)
+        or not isinstance(assignment["hours_to_complete"], int)
+        or not isinstance(assignment["include_weekends"], bool)
     ):
         print("Error while reading assignments from json file: " "invalid field types")
         return False
@@ -77,20 +77,22 @@ def _read_assignments(path_to_json: str):
 
 
 def _generate_assignments(
-        num_of_assignments: int,
-        max_day_range: int = 30,
-        min_day_range: int = 2,
-        working_hours_ratio: float = 0.1,
-        include_weekends_prob: float = 0.3,
+    num_of_assignments: int,
+    max_day_range: int = 30,
+    min_day_range: int = 2,
+    working_hours_ratio: float = 0.1,
+    include_weekends_prob: float = 0.3,
 ):
-    if num_of_assignments <= 0 or \
-            max_day_range <= 0 or \
-            min_day_range <= 0 or \
-            working_hours_ratio <= 0 or \
-            working_hours_ratio > 1 or \
-            include_weekends_prob <= 0 or \
-            include_weekends_prob > 1 or \
-            max_day_range < min_day_range:
+    if (
+        num_of_assignments <= 0
+        or max_day_range <= 0
+        or min_day_range <= 0
+        or working_hours_ratio <= 0
+        or working_hours_ratio > 1
+        or include_weekends_prob <= 0
+        or include_weekends_prob > 1
+        or max_day_range < min_day_range
+    ):
         print("Error while generating assignments: invalid arguments")
         return
 
@@ -117,19 +119,23 @@ def _generate_assignments(
         yield assignment
 
 
-def get_number_of_classes_per_day(study_year: str, track: str) -> dict[str, int] | None:
+def get_number_of_classes_per_day(
+    study_year: str, track: str, path
+) -> dict[str, int] | None:
     """
     Returns the number of classes per day for each day of the week.
     """
-    number_of_classes = json.load(open(environment.PATH_TO_SCHEDULE))
+    number_of_classes = json.load(open(path))
     return number_of_classes.get(study_year, {}).get(track, None)
 
 
-def get_free_hours_per_day(study_year: str, track: str) -> dict[str, float] | None:
+def get_free_hours_per_day(
+    study_year: str, track: str, path
+) -> dict[str, float] | None:
     """
     Returns the number of free hours per day for each day of the week.
     """
-    number_of_classes = get_number_of_classes_per_day(study_year, track)
+    number_of_classes = get_number_of_classes_per_day(study_year, track, path)
     if number_of_classes is None:
         return None
     free_hours = {}
