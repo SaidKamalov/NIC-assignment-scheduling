@@ -1,5 +1,6 @@
 import random
 from copy import deepcopy
+import environment
 
 
 class Chromosome:
@@ -84,19 +85,9 @@ class GeneticAlgorithm:
                     children.append(Chromosome(c2_genes))
             self.population = (children + elite)[: self.population_size]
 
-        # for i in range(self.elite_size, self.population_size):
-        #     if random.random() < self.crossover_rate:
-        #         parent1 = random.choice(self.elite)
-        #         parent2 = random.choice(self.elite)
-        #         child = (
-        #             parent1.genes[: len(parent1.genes) // 2]
-        #             + parent2.genes[len(parent2.genes) // 2 :]
-        #         )
-        #         self.population[i] = Chromosome(child)
-
     def mutate(self) -> None:
         if self.mutate_func:
-            for chromosome in self.population:
+            for chromosome in self.population[self.elite_size :]:
                 self.mutate_func(chromosome.genes, self.mutation_rate)
         else:
             for i in range(self.elite_size, self.population_size):
@@ -105,16 +96,6 @@ class GeneticAlgorithm:
                         self.population[i].genes[j] = deepcopy(
                             random.choice(self.possible_genes)
                         )
-
-        # if self.mutate_func:
-        #     self.population = self.mutate_func(
-        #         self.population, self.mutation_rate, self.possible_genes
-        #     )
-
-        # for i in range(self.elite_size, self.population_size):
-        #     for j in range(len(self.population[i].genes)):
-        #         if random.random() < self.mutation_rate:
-        #             self.population[i].genes[j] = random.choice(self.possible_genes)
 
     def initialize(self) -> None:
         self.population = [
@@ -162,8 +143,8 @@ class GeneticAlgorithm:
 
 
 if __name__ == "__main__":
-    # TODO: remove, just for testing
     from assignment import get_assignments
+    from experiments import visualize
     from domain_to_ga import (
         generate_chromo,
         AssignmentGene,
@@ -171,16 +152,21 @@ if __name__ == "__main__":
         fitness,
         random_mutate_genes,
         crossover,
+        crossover_v2,
     )
 
-    GeneticAlgorithm(
+    ga = GeneticAlgorithm(
         possible_genes=[
             AssignmentGene(assignment) for assignment in SCHEDULE.assignments
         ],
-        early_stop=100,
+        early_stop=environment.EARLY_STOP,
         generate_func=generate_chromo,
         fitness_func=fitness,
         mutate_func=random_mutate_genes,
-        crossover_func=crossover,
-        mutation_rate=0.1,
-    ).run(50)
+        crossover_func=crossover_v2,
+        mutation_rate=environment.MUTATION_RATE,
+        population_size=environment.POPULATION_SIZE,
+        elite_size=environment.ELITE_SIZE,
+    )
+    solution = ga.run(environment.NUM_OF_RUNS)
+    visualize(solution.genes)
