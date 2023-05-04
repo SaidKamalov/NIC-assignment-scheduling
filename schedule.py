@@ -12,11 +12,11 @@ class Schedule:
     """Just prototype with random initialization"""
 
     def __init__(
-        self,
-        path: str | None = None,
-        study_year: str | None = None,
-        track: str | None = None,
-        num_of_assignments: int = 5,
+            self,
+            path: str | None = None,
+            study_year: str | None = None,
+            track: str | None = None,
+            num_of_assignments: int = 5,
     ) -> None:
         self.assignments: list[Assignment] = get_assignments(
             path=path, num_of_assignments=num_of_assignments
@@ -31,7 +31,7 @@ class Schedule:
 
         self._add_assignments()
 
-    def _add_assignments(self, path: str | None = None) -> None:
+    def _add_assignments(self) -> None:
         self.assignments = sorted(self.assignments)
         first_date = self.assignments[0].start_date
         last_date = self.assignments[-1].end_date
@@ -54,10 +54,13 @@ class Schedule:
             new_date = first_date + timedelta(days=day)
             self.days[new_date] = free_hours[str(new_date.weekday())]
 
-    def get_free_time(self, from_: date, to: date):
+    def get_free_time(self, from_: date, to: date, include_weekends: bool = False):
         delta = (to - from_).days
         free_hours = 0.0
         for day in range(0, delta + 1):
+            new_date = from_ + timedelta(days=day)
+            if not include_weekends and new_date.weekday() in [5, 6]:
+                continue
             free_hours += self.days.get(from_ + timedelta(days=day), 0)
         return free_hours
 

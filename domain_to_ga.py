@@ -1,8 +1,7 @@
 from assignment import Assignment
 from datetime import date, timedelta
-from random import randint, choice, random
+from random import randint, random
 from copy import deepcopy
-from genetic_algorithm import Chromosome
 from schedule import Schedule
 
 PATH = None
@@ -67,7 +66,7 @@ def generate_rand_gene(gene: AssignmentGene) -> AssignmentGene:
 
 
 def random_mutate_genes(
-    genes: list[AssignmentGene], mutation_rate: float, *args
+        genes: list[AssignmentGene], mutation_rate: float, *args
 ) -> None:
     for gene in genes:
         if random() < mutation_rate:
@@ -86,7 +85,8 @@ def fitness(genes: list[AssignmentGene]):
     # check time
     time_issues = 0
     for gene in genes:
-        available_time = SCHEDULE.get_free_time(from_=gene.start, to=gene.deadline)
+        available_time = SCHEDULE.get_free_time(from_=gene.start, to=gene.deadline,
+                                                include_weekends=gene.assignment.include_weekends)
         if available_time < gene.assignment.hours_to_complete:
             time_issues += 1
 
