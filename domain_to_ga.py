@@ -83,7 +83,8 @@ def fitness(genes: list[AssignmentGene]):
     # check time
     time_issues = 0
     for gene in genes:
-        available_time = SCHEDULE.get_free_time(from_=gene.start, to=gene.deadline)
+        available_time = SCHEDULE.get_free_time(from_=gene.start, to=gene.deadline,
+                                                include_weekends=gene.assignment.include_weekends)
         if available_time < gene.assignment.hours_to_complete:
             time_issues += 1
 
