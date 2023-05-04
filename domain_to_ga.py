@@ -1,3 +1,6 @@
+"""
+ALl the functions and classes that are needed to convert the domain to the GA.
+"""
 from assignment import Assignment
 from datetime import date, timedelta
 from random import randint, random
@@ -18,7 +21,15 @@ SCHEDULE = Schedule(
 
 
 class AssignmentGene:
+    """
+    Class to represent the gene for the assignment.
+    Gene is a time slot for the assignment.
+    """
+
     def __init__(self, assignment: Assignment) -> None:
+        """
+        :param assignment: assignment for the gene
+        """
         self.assignment: Assignment = assignment
         self.start: date = deepcopy(self.assignment.start_date)
         self.deadline: date = deepcopy(self.assignment.end_date)
@@ -37,7 +48,7 @@ class AssignmentGene:
 
     def rand_time_slot(self) -> tuple[date, date]:
         """
-        Function to get the time slot for the assignment in the give gene.
+        Gets the time slot for the assignment in the give gene.
         Time slot is in [assignment.start_date; assignment.end_date].
         """
         end_date: date = self.assignment.end_date
@@ -52,7 +63,11 @@ class AssignmentGene:
 
 
 def generate_chromo(genes: list[AssignmentGene]) -> list[AssignmentGene]:
-    """Function to create new chromosome"""
+    """
+    Generates a chromosome for the given genes.
+    :param genes: list of genes
+    :return: generated genes for the chromosome
+    """
     genes_for_chromo: list[AssignmentGene] = [
         generate_rand_gene(gene) for gene in genes
     ]
@@ -61,8 +76,8 @@ def generate_chromo(genes: list[AssignmentGene]) -> list[AssignmentGene]:
 
 def generate_rand_gene(gene: AssignmentGene) -> AssignmentGene:
     """
-    Function to create copy of a given gene,
-    but assign random time slot for the assignment.
+    Creates copy of a given gene,
+    but assigns random time slot for the assignment.
     """
     new_gene = AssignmentGene(gene.assignment)
     new_gene.start, new_gene.deadline = new_gene.rand_time_slot()
@@ -70,14 +85,25 @@ def generate_rand_gene(gene: AssignmentGene) -> AssignmentGene:
 
 
 def random_mutate_genes(
-    genes: list[AssignmentGene], mutation_rate: float, *args
+        genes: list[AssignmentGene], mutation_rate: float
 ) -> None:
+    """
+    Mutates the given genes with the given mutation rate.
+    :param genes: list of genes to mutate
+    :param mutation_rate: mutation rate
+    :return: None
+    """
     for gene in genes:
         if random() < mutation_rate:
             gene.start, gene.deadline = gene.rand_time_slot()
 
 
-def fitness(genes: list[AssignmentGene]):
+def fitness(genes: list[AssignmentGene]) -> float:
+    """
+    Calculates the fitness of the given genes.
+    :param genes: genes to calculate fitness for
+    :return: fitness of the given genes
+    """
     genes_sorted = sorted(genes)
 
     # count overlapping
@@ -98,8 +124,8 @@ def fitness(genes: list[AssignmentGene]):
             time_issues += 0.5
 
         if (
-            gene.assignment.hours_to_complete
-            > (gene.deadline - gene.start).days * 24 * 0.1
+                gene.assignment.hours_to_complete
+                > (gene.deadline - gene.start).days * 24 * 0.1
         ):
             time_issues += 2
         if gene.assignment.hours_to_complete < 0.3 * available_time:
@@ -109,8 +135,14 @@ def fitness(genes: list[AssignmentGene]):
 
 
 def crossover(
-    p1: list[AssignmentGene], p2: list[AssignmentGene]
+        p1: list[AssignmentGene], p2: list[AssignmentGene]
 ) -> tuple[list[AssignmentGene], list[AssignmentGene]]:
+    """
+    Crossover for the given parents.
+    :param p1: parent 1
+    :param p2: parent 2
+    :return: children
+    """
     c1: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p1]
     c2: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p2]
     for i, gene1 in enumerate(c1):
@@ -131,60 +163,24 @@ def crossover(
 
 
 def crossover_v2(
-    p1: list[AssignmentGene], p2: list[AssignmentGene]
+        p1: list[AssignmentGene], p2: list[AssignmentGene]
 ) -> tuple[list[AssignmentGene], list[AssignmentGene]]:
+    """
+    Crossover for the given parents.(Modification of the crossover() function)
+    :param p1: parent 1
+    :param p2: parent 2
+    :return: children
+    """
     c1: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p1]
     c2: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p2]
     for i, gene1 in enumerate(c1):
         gene1.start, gene1.deadline = deepcopy(p1[i].start), deepcopy(p1[i].deadline)
     for i, gene2 in enumerate(c2):
         gene2.start, gene2.deadline = deepcopy(p2[i].start), deepcopy(p2[i].deadline)
-    c1_new = c1[: len(c1) // 2] + c2[len(c2) // 2 :]
-    c2_new = c2[: len(c2) // 2] + c1[len(c1) // 2 :]
+    c1_new = c1[: len(c1) // 2] + c2[len(c2) // 2:]
+    c2_new = c2[: len(c2) // 2] + c1[len(c1) // 2:]
     return c1_new, c2_new
 
 
 if __name__ == "__main__":
-    # TODO: remove, just for testing
-    print("Assignment list:")
-    for assignment in SCHEDULE.assignments:
-        print(assignment)
-    print()
-    print("list possible genes:")
-    possible_genes = [AssignmentGene(assignment) for assignment in SCHEDULE.assignments]
-    for gene in possible_genes:
-        print(gene)
-    print()
-    print("list genes in chromosome")
-    genes_for_chromo = generate_chromo(possible_genes)
-    for gene in genes_for_chromo:
-        print(gene)
-    print()
-    print("list chromosome genes after mutation")
-    random_mutate_genes(genes_for_chromo, mutation_rate=0.8)
-    for gen in genes_for_chromo:
-        print(gen)
-    print()
-    fitness_score = fitness(genes=genes_for_chromo)
-    print("fitness sore of chromo", fitness_score)
-    print("##########")
-    print("test custom crossover:")
-    parent1 = generate_chromo(possible_genes)
-    print("parent1:")
-    for gene in parent1:
-        print(gene)
-    print()
-    parent2 = generate_chromo(possible_genes)
-    print("parent2:")
-    for gene in parent2:
-        print(gene)
-    print()
-    c1, c2 = crossover(parent1, parent2)
-    print("child1:")
-    for gene in c1:
-        print(gene)
-    print()
-    print("child2:")
-    for gene in c2:
-        print(gene)
-    print()
+    pass

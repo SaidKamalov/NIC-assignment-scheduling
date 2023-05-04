@@ -5,6 +5,10 @@ from domain_to_ga import AssignmentGene
 
 
 def visualize(solution: list[AssignmentGene]):
+    """
+    Visualize the solution
+    :param solution: list of assignment genes
+    """
     df = pd.DataFrame(
         [
             {

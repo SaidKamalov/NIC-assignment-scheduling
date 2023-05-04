@@ -5,7 +5,14 @@ import tqdm
 
 
 class Chromosome:
+    """
+    Chromosome class for genetic algorithm
+    """
+
     def __init__(self, genes: list) -> None:
+        """
+        :param genes: list of genes
+        """
         self.genes: list = genes
         self.fitness: int = 0
 
@@ -17,19 +24,35 @@ class Chromosome:
 
 
 class GeneticAlgorithm:
+    """
+    Genetic algorithm class
+    """
+
     def __init__(
-        self,
-        possible_genes: list,
-        population_size: int = 500,
-        elite_size: int = 200,
-        mutation_rate: float = 0.2,
-        crossover_rate: float = 0.5,
-        early_stop: int = 3,
-        mutate_func=None,
-        crossover_func=None,
-        generate_func=None,
-        fitness_func=None,
+            self,
+            possible_genes: list,
+            population_size: int = 500,
+            elite_size: int = 200,
+            mutation_rate: float = 0.2,
+            crossover_rate: float = 0.5,
+            early_stop: int = 3,
+            mutate_func=None,
+            crossover_func=None,
+            generate_func=None,
+            fitness_func=None,
     ) -> None:
+        """
+        :param possible_genes: list of possible genes
+        :param population_size: size of population
+        :param elite_size: size of elite
+        :param mutation_rate: mutation rate
+        :param crossover_rate: crossover rate
+        :param early_stop: early stop
+        :param mutate_func: mutation function
+        :param crossover_func: crossover function
+        :param generate_func: generate function
+        :param fitness_func: fitness function
+        """
         self.possible_genes: list = possible_genes
         self.population_size: int = population_size
         self.elite_size: int = elite_size
@@ -45,6 +68,10 @@ class GeneticAlgorithm:
         self.elite: list[Chromosome] = []
 
     def _generate_chromosome(self) -> Chromosome:
+        """
+        Generate new chromosome
+        :return: generated chromosome
+        """
         if self.generate_func:
             new_chromosome = Chromosome(self.generate_func(self.possible_genes))
             return new_chromosome
@@ -54,11 +81,19 @@ class GeneticAlgorithm:
         )
 
     def _get_elite(self) -> list[Chromosome]:
+        """
+        Get elite from population
+        :return: list of best chromosomes
+        """
         return sorted(self.population, key=lambda x: x.fitness, reverse=True)[
-            : self.elite_size
-        ]
+               : self.elite_size
+               ]
 
     def crossover(self) -> None:
+        """
+        Performs crossover on population elite
+        :return: None
+        """
         if self.crossover_func:
             elite = self._get_elite()
             children = []
@@ -75,20 +110,24 @@ class GeneticAlgorithm:
             for i in range(len(elite)):
                 for j in range(i + 1, len(elite)):
                     c1_genes = (
-                        elite[i].genes[: len(elite[i].genes) // 2]
-                        + elite[j].genes[len(elite[j].genes) // 2 :]
+                            elite[i].genes[: len(elite[i].genes) // 2]
+                            + elite[j].genes[len(elite[j].genes) // 2:]
                     )
                     c2_genes = (
-                        elite[j].genes[: len(elite[j].genes) // 2]
-                        + elite[i].genes[len(elite[i].genes) // 2 :]
+                            elite[j].genes[: len(elite[j].genes) // 2]
+                            + elite[i].genes[len(elite[i].genes) // 2:]
                     )
                     children.append(Chromosome(c1_genes))
                     children.append(Chromosome(c2_genes))
             self.population = (children + elite)[: self.population_size]
 
     def mutate(self) -> None:
+        """
+        Performs mutation on population
+        :return: None
+        """
         if self.mutate_func:
-            for chromosome in self.population[self.elite_size :]:
+            for chromosome in self.population[self.elite_size:]:
                 self.mutate_func(chromosome.genes, self.mutation_rate)
         else:
             for i in range(self.elite_size, self.population_size):
@@ -99,12 +138,20 @@ class GeneticAlgorithm:
                         )
 
     def initialize(self) -> None:
+        """
+        Initializes population
+        :return: None
+        """
         self.population = [
             self._generate_chromosome() for _ in range(self.population_size)
         ]
         self.elite = self._get_elite()
 
     def calculate_fitness(self) -> None:
+        """
+        Calculates fitness of population
+        :return: None
+        """
         for chromosome in self.population:
             chromosome.fitness = (
                 self.fitness_func(chromosome.genes)
@@ -114,14 +161,27 @@ class GeneticAlgorithm:
         self.elite = self._get_elite()
 
     def evolve(self) -> None:
+        """
+        Performs one evolution step
+        :return: None
+        """
         self.crossover()
         self.mutate()
         self.calculate_fitness()
 
     def get_best(self) -> Chromosome:
+        """
+        Returns best chromosome
+        :return: best Chromosome
+        """
         return self.elite[0]
 
     def run(self, num_of_generations: int) -> Chromosome:
+        """
+        Runs genetic algorithm
+        :param num_of_generations: number of generations
+        :return: best Chromosome
+        """
         print("Starting genetic algorithm...")
         self.initialize()
         best_score = self.get_best().fitness
@@ -158,6 +218,7 @@ if __name__ == "__main__":
         crossover_v2,
     )
 
+    # An example of usage
     ga = GeneticAlgorithm(
         possible_genes=[
             AssignmentGene(assignment) for assignment in SCHEDULE.assignments
