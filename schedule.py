@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from collections import OrderedDict
 from copy import deepcopy
 from random import randint
-from input_handling.get_free_hours import get_free_hours_per_day
+from input_handling.input import get_free_hours_per_day
 
 AVG_STUDY_HOURS_PER_DAY = 6
 
@@ -12,11 +12,11 @@ class Schedule:
     """Just prototype with random initialization"""
 
     def __init__(
-            self,
-            path: str | None = None,
-            study_year: str | None = None,
-            track: str | None = None,
-            num_of_assignments: int = 5,
+        self,
+        path: str | None = None,
+        study_year: str | None = None,
+        track: str | None = None,
+        num_of_assignments: int = 5,
     ) -> None:
         self.assignments: list[Assignment] = get_assignments(
             path=path, num_of_assignments=num_of_assignments
