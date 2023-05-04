@@ -4,9 +4,9 @@ from random import randint, random
 from copy import deepcopy
 from schedule import Schedule
 
-PATH = None
-TRACK = "CS"
-STUDY_YEAR = "BS1"
+PATH = "input_handling/inno_assignments.json"
+TRACK = "DS"
+STUDY_YEAR = "BS2"
 
 SCHEDULE = Schedule(
     path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=20
@@ -66,7 +66,7 @@ def generate_rand_gene(gene: AssignmentGene) -> AssignmentGene:
 
 
 def random_mutate_genes(
-        genes: list[AssignmentGene], mutation_rate: float, *args
+    genes: list[AssignmentGene], mutation_rate: float, *args
 ) -> None:
     for gene in genes:
         if random() < mutation_rate:
@@ -85,8 +85,11 @@ def fitness(genes: list[AssignmentGene]):
     # check time
     time_issues = 0
     for gene in genes:
-        available_time = SCHEDULE.get_free_time(from_=gene.start, to=gene.deadline,
-                                                include_weekends=gene.assignment.include_weekends)
+        available_time = SCHEDULE.get_free_time(
+            from_=gene.start,
+            to=gene.deadline,
+            include_weekends=gene.assignment.include_weekends,
+        )
         if available_time < gene.assignment.hours_to_complete:
             time_issues += 1
 
