@@ -28,3 +28,7 @@ def visualize(solution: list[AssignmentGene]):
     fig.update_yaxes(autorange="reversed")
     fig.update_layout(font=plotly.graph_objs.layout.Font(size=22))
     fig.show()
+
+
+if __name__ == "__main__":
+    pass

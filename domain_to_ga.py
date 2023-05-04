@@ -116,11 +116,11 @@ def crossover(
         gene2.start, gene2.deadline = deepcopy(p2[i].start), deepcopy(p2[i].deadline)
 
     for i in range(len(p1) - 1):
-        if p1[i].deadline > p1[i + 1].start and p2[i].deadline <= p1[i + 1].start:
+        if p1[i].deadline > p1[i + 1].start >= p2[i].deadline:
             c1[i].start, c1[i].deadline = deepcopy(p2[i].start), deepcopy(
                 p2[i].deadline
             )
-        elif p2[i].deadline > p2[i + 1].start and p1[i].deadline <= p2[i + 1].start:
+        elif p2[i].deadline > p2[i + 1].start >= p1[i].deadline:
             c2[i].start, c2[i].deadline = deepcopy(p1[i].start), deepcopy(
                 p1[i].deadline
             )

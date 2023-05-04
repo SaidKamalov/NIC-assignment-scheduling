@@ -1,6 +1,7 @@
 import random
 from copy import deepcopy
 import environment
+import tqdm
 
 
 class Chromosome:
@@ -9,7 +10,7 @@ class Chromosome:
         self.fitness: int = 0
 
     def __str__(self) -> str:
-        return "\n".join(map(str, self.genes)) + f"\nchromosome score ={self.fitness}"
+        return "\n".join(map(str, self.genes)) + f"\nchromosome score = {self.fitness}"
 
     def __repr__(self) -> str:
         return str(self.genes)
@@ -125,14 +126,16 @@ class GeneticAlgorithm:
         self.initialize()
         best_score = self.get_best().fitness
         init_early_stop = self.early_stop
-        for i in range(num_of_generations):
+        bar = tqdm.tqdm(range(num_of_generations))
+        for i in bar:
             self.evolve()
             if best_score >= self.get_best().fitness:
                 self.early_stop -= 1
             else:
                 self.early_stop = init_early_stop
             best_score = self.get_best().fitness
-            print(f"Generation {i + 1}/{num_of_generations}, score={best_score}")
+
+            bar.set_postfix_str(f"Best score: {best_score}")
             if self.early_stop <= 0:
                 break
 
