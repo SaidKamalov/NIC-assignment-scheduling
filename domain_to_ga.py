@@ -3,10 +3,11 @@ from datetime import date, timedelta
 from random import randint, random
 from copy import deepcopy
 from schedule import Schedule
+import environment
 
-PATH = "input_handling/inno_assignments.json"
-TRACK = "DS"
-STUDY_YEAR = "BS2"
+PATH = environment.PATH_TO_ASSIGNMENTS
+TRACK = environment.TRACK
+STUDY_YEAR = environment.STUDY_YEAR
 
 SCHEDULE = Schedule(
     path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=20
@@ -80,7 +81,7 @@ def fitness(genes: list[AssignmentGene]):
     overlap_count = 0
     for i in range(len(genes_sorted) - 1):
         if genes_sorted[i].deadline > genes_sorted[i + 1].start:
-            overlap_count += 1
+            overlap_count += 1.5
 
     # check time
     time_issues = 0
@@ -91,15 +92,15 @@ def fitness(genes: list[AssignmentGene]):
             include_weekends=gene.assignment.include_weekends,
         )
         if available_time < gene.assignment.hours_to_complete:
-            time_issues += 1
+            time_issues += 0.5
 
         if (
             gene.assignment.hours_to_complete
             > (gene.deadline - gene.start).days * 24 * 0.1
         ):
-            time_issues += 1
+            time_issues += 2
         if gene.assignment.hours_to_complete < 0.3 * available_time:
-            time_issues += 1
+            time_issues += 2
 
     return -(overlap_count + time_issues)
 
@@ -107,9 +108,13 @@ def fitness(genes: list[AssignmentGene]):
 def crossover(
     p1: list[AssignmentGene], p2: list[AssignmentGene]
 ) -> tuple[list[AssignmentGene], list[AssignmentGene]]:
-    # p1, p2 = sorted(parent1), sorted(parent2)
     c1: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p1]
     c2: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p2]
+    for i, gene1 in enumerate(c1):
+        gene1.start, gene1.deadline = deepcopy(p1[i].start), deepcopy(p1[i].deadline)
+    for i, gene2 in enumerate(c2):
+        gene2.start, gene2.deadline = deepcopy(p2[i].start), deepcopy(p2[i].deadline)
+
     for i in range(len(p1) - 1):
         if p1[i].deadline > p1[i + 1].start and p2[i].deadline <= p1[i + 1].start:
             c1[i].start, c1[i].deadline = deepcopy(p2[i].start), deepcopy(
@@ -120,6 +125,20 @@ def crossover(
                 p1[i].deadline
             )
     return c1, c2
+
+
+def crossover_v2(
+    p1: list[AssignmentGene], p2: list[AssignmentGene]
+) -> tuple[list[AssignmentGene], list[AssignmentGene]]:
+    c1: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p1]
+    c2: list[AssignmentGene] = [AssignmentGene(gene.assignment) for gene in p2]
+    for i, gene1 in enumerate(c1):
+        gene1.start, gene1.deadline = deepcopy(p1[i].start), deepcopy(p1[i].deadline)
+    for i, gene2 in enumerate(c2):
+        gene2.start, gene2.deadline = deepcopy(p2[i].start), deepcopy(p2[i].deadline)
+    c1_new = c1[: len(c1) // 2] + c2[len(c2) // 2 :]
+    c2_new = c2[: len(c2) // 2] + c1[len(c1) // 2 :]
+    return c1_new, c2_new
 
 
 if __name__ == "__main__":
