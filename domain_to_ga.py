@@ -10,7 +10,10 @@ TRACK = environment.TRACK
 STUDY_YEAR = environment.STUDY_YEAR
 
 SCHEDULE = Schedule(
-    path=PATH, study_year=STUDY_YEAR, track=TRACK, num_of_assignments=20
+    path=PATH,
+    study_year=STUDY_YEAR,
+    track=TRACK,
+    num_of_assignments=environment.NUMBER_OF_ASSIGNMENTS,
 )
 
 

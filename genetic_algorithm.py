@@ -166,7 +166,7 @@ if __name__ == "__main__":
         generate_func=generate_chromo,
         fitness_func=fitness,
         mutate_func=random_mutate_genes,
-        crossover_func=crossover_v2,
+        crossover_func=crossover,
         mutation_rate=environment.MUTATION_RATE,
         population_size=environment.POPULATION_SIZE,
         elite_size=environment.ELITE_SIZE,

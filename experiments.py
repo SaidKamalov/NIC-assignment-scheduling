@@ -12,6 +12,8 @@ def visualize(solution: list[AssignmentGene]):
                 "from": gene.assignment.start_date,
                 "to": gene.deadline,
                 "hours_to_complete": f"hours_to_complete: {gene.assignment.hours_to_complete}",
+                "start_bound": gene.assignment.start_date,
+                "end_bound": gene.assignment.end_date,
             }
             for gene in solution
         ]
