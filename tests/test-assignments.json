@@ -1,0 +1,53 @@
+{
+  "assignments": [
+    {
+      "name": "Correct",
+      "start_date": "2023-02-10",
+      "end_date": "2023-02-20",
+      "hours_to_complete": 10,
+      "include_weekends": true
+    },
+    {
+      "hours_to_complete": 10,
+      "name": "Correct",
+      "end_date": "2023-02-20",
+      "start_date": "2023-02-10",
+      "include_weekends": true
+    },
+    {
+      "name": "Wrong",
+      "start_date": "2023-05-01",
+      "end_date": "2023-05-07",
+      "hours_to_complete": 8,
+      "include_weekends": "hello"
+    },
+    {
+      "name": "Wrong",
+      "start_date": "2023-04-16",
+      "end_date": "2023-04-18",
+      "hours_to_complete": -5,
+      "include_weekends": false
+    },
+    {
+      "name": "Wrong",
+      "start_date": "2023-04-16",
+      "end_date": "2023-04-13",
+      "hours_to_complete": 20,
+      "include_weekends": false
+    },
+    {
+      "name": "Wrong",
+      "start_date": 55,
+      "end_date": "2023-04-18",
+      "hours_to_complete": 10,
+      "include_weekends": false
+    },
+    {
+      "name": "Wrong",
+      "start_date": "2023-04-16",
+      "end_date": true,
+      "hours_to_complete":  10,
+      "include_weekends": false
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "assignments": [
+    {
+      "name": "Intro to ML Assignment 1",
+      "start_date": "2023-02-10",
+      "end_date": "2023-03-02",
+      "hours_to_complete": 20
+    },
+    {
+      "name": "Intro to ML Assignment 2",
+      "start_date": "2023-03-20",
+      "end_date": "2023-04-20",
+      "hours_to_complete": 40
+    },
+    {
+      "name": "Intro to ML Bonus Assignment",
+      "start_date": "2023-04-25",
+      "end_date": "2023-05-10",
+      "hours_to_complete": 10,
+      "include_weekends": true
+    },
+    {
+      "name": "Databases Assignment 1",
+      "start_date": "2023-03-20",
+      "end_date": "2023-04-20",
+      "hours_to_complete": 15
+    },
+    {
+      "name": "Stat. Techniques Assignment 1",
+      "start_date": "2023-02-14",
+      "end_date": "2023-02-28",
+      "hours_to_complete": 30,
+      "include_weekends": true
+    },
+    {
+      "name": "Stat. Techniques Assignment 2",
+      "start_date": "2023-04-10",
+      "end_date": "2023-05-08",
+      "hours_to_complete": 30,
+      "include_weekends": true
+    },
+    {
+      "name": "NIC Homework",
+      "start_date": "2023-03-20",
+      "end_date": "2023-04-10",
+      "hours_to_complete": 25
+    },
+    {
+      "name": "NIC Final Project",
+      "start_date": "2023-04-05",
+      "end_date": "2023-05-8",
+      "hours_to_complete": 30,
+      "include_weekends": true
+    }
+  ]
+}
