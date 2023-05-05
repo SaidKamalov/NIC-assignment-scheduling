@@ -50,11 +50,19 @@ The example of the schedule can be found in `input_handling/schedule-example.jso
 ## How to run the project
 
 1. Clone the repository
-2. Install the dependencies with `pip install -r requirements.txt`
+2. Install the dependencies with 
+```bash
+pip install -r requirements.txt
+```
 3. Configure the algorithm parameters in `environment.py`
-4. Run the project with `python genetic_algorithm.py`
-
-To run the tests, use `python tests/test_all.py`
+4. Run the project with 
+```bash
+python genetic_algorithm.py
+```
+To run the tests, use 
+```bash
+python tests/test_all.py
+```
 
 ## How to use Genetic Algorithm for your own problem
 
