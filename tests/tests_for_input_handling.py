@@ -1,5 +1,5 @@
-from input_handling.get_free_hours import get_free_hours_per_day, get_number_of_classes_per_day
-from input_handling.input import _read_assignments, _generate_assignments
+from input_handling.input import _read_assignments, _generate_assignments, get_free_hours_per_day, \
+    get_number_of_classes_per_day
 from datetime import date, timedelta
 
 PATH = "../input_handling/inno_number_of_classes.json"

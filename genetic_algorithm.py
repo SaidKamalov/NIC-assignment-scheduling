@@ -120,6 +120,9 @@ class GeneticAlgorithm:
                     children.append(Chromosome(c1_genes))
                     children.append(Chromosome(c2_genes))
             self.population = (children + elite)[: self.population_size]
+        if len(self.population) < self.population_size:
+            self.population.extend(
+                [self._generate_chromosome() for _ in range(self.population_size - len(self.population))])
 
     def mutate(self) -> None:
         """
@@ -197,6 +200,7 @@ class GeneticAlgorithm:
 
             bar.set_postfix_str(f"Best score: {best_score}")
             if self.early_stop <= 0:
+                print("Early stopping!")
                 break
 
         best_solution = self.get_best()
