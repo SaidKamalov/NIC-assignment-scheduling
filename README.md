@@ -31,7 +31,7 @@ Constraints:
 - `start_date` < `end_date`
 - `hours_to_complete` > 0
 
-The example of the input data can be found in `input_handling/assignments-example.json`.
+The example of the input data can be found in [`input_handling/assignments-example.json`](https://github.com/SaidKamalov/NIC-assignment-scheduling/blob/main/input_handling/assignments-example.json).
 
 ## Schedule Format
 
@@ -45,7 +45,7 @@ The students' schedule is represented as json file and has the following structu
           }
           }
 
-The example of the schedule can be found in `input_handling/schedule-example.json`.
+The example of the schedule can be found in [`input_handling/schedule-example.json`](https://github.com/SaidKamalov/NIC-assignment-scheduling/blob/main/input_handling/schedule-example.json).
 
 ## How to run the project
 
